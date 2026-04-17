@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CAT Mock Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; }
+    header { background:#003366; color:#fff; padding:10px; }
+    #container { display:flex; height:90vh; }
+    #question-area { flex:3; padding:20px; border-right:1px solid #ccc; overflow-y:auto; }
+    #panel { flex:1; padding:20px; background:#f9f9f9; }
+    .question { margin-bottom:20px; display:none; }
+    .options label { display:block; margin:5px 0; }
+    .btns { margin-top:20px; }
+    button { margin:5px; padding:8px 12px; }
+    #timer { font-weight:bold; color:#d9534f; }
+    .qnav { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:20px; }
+    .qnav button { padding:10px; }
+    .result { margin-top:10px; font-weight:bold; }
+    #scoreboard { margin-top:20px; font-size:18px; font-weight:bold; color:#003366; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>CAT Mock Test – Quant Section</h2>
+    Time Left: <span id="timer">30:00</span>
+  </header>
+
+  <div id="container">
+    <div id="question-area">
+      <!-- Q1 -->
+      <div class="question" id="q1">
+        <p><b>Q1.</b> Ramu mixes 2 litres of mineral water costing Rs. 15 per litre with 18 litres of milk that he bought for Rs. 900. After selling 2 litres of this mixture to Shamu, Ramu adds tap water so that the ratio of milk to tap water is 9:10. If tap water is free and Ramu claims to sell at cost price of milk, what is his profit%?</p>
+        <div class="options">
+          <label><input type="radio" name="q1" value="A"> A) 96% profit</label>
+          <label><input type="radio" name="q1" value="B"> B) 100% profit</label>
+          <label><input type="radio" name="q1" value="C"> C) 104.5% profit</label>
+          <label><input type="radio" name="q1" value="D"> D) 110% profit</label>
+        </div>
+        <div class="result" id="res1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question" id="q2">
+        <p><b>Q2.</b> A fuel dealer purchases 120 litres of petrol at ₹35 per litre. To increase his margin, he blends it with kerosene that costs him ₹24 per litre. He then sells the mixture at ₹36 per litre, but adjusts the meter so that every “1 litre” shown is actually only 0.96 litre delivered. If his overall gain is 25%, determine how many litres of kerosene he must have added.</p>
+        <div class="options">
+          <label><input type="radio" name="q2" value="A"> A) 80 litres</label>
+          <label><input type="radio" name="q2" value="B"> B) 90 litres</label>
+          <label><input type="radio" name="q2" value="C"> C) 100 litres</label>
+          <label><input type="radio" name="q2" value="D"> D) 120 litres</label>
+        </div>
+        <div class="result" id="res2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question" id="q3">
+        <p><b>Q3.</b> Three items — P, Q, and R — are sold at prices that stand in the ratio 29 : 27 : 32. The percentage gains on these items are in the ratio 4 : 2 : 5 respectively. The cost price of P is the same as that of Q, while the cost price of R is ₹480. Find the overall percentage gain made on all three items together.</p>
+        <div class="options">
+          <label><input type="radio" name="q3" value="A"> A) 12%</label>
+          <label><input type="radio" name="q3" value="B"> B) 14.8%</label>
+          <label><input type="radio" name="q3" value="C"> C) 16%</label>
+          <label><input type="radio" name="q3" value="D"> D) 18%</label>
+        </div>
+        <div class="result" id="res3"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question" id="q4">
+        <p><b>Q4.</b> Rani buys more apples than oranges. She sells each apple for ₹23, earning a 15% profit, and each orange for ₹10, earning a 25% profit. After selling all her apples and oranges, she collects a total of ₹653. What is her overall profit percentage?</p>
+        <div class="options">
+          <label><input type="radio" name="q4" value="A"> A) 15%</label>
+          <label><input type="radio" name="q4" value="B"> B) 16%</label>
+          <label><input type="radio" name="q4" value="C"> C) 17.5%</label>
+          <label><input type="radio" name="q4" value="D"> D) 18%</label>
+        </div>
+        <div class="result" id="res4"></div>
+      </div>
+
+      <div class="btns">
+        <button onclick="prevQ()">Previous</button>
+        <button onclick="nextQ()">Next</button>
+        <button onclick="submitQuiz()">Submit</button>
+      </div>
+
+      <div id="scoreboard"></div>
+    </div>
+
+    <div id="panel">
+      <h3>Question Panel</h3>
+      <div class="qnav">
+        <button onclick="showQ(1)">1</button>
+        <button onclick="showQ(2)">2</button>
+        <button onclick="showQ(3)">3</button>
+        <button onclick="showQ(4)">4</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const answers = { q1:"C", q2:"C", q3:"B", q4:"C" };
+
+    // Timer
+    let time = 30*60;
+    const timerEl = document.getElementById('timer');
+    const countdown = setInterval(()=>{
+      let m = Math.floor(time/60);
+      let s = time%60;
+      timerEl.textContent = `${m}:${s<10?'0'+s:s}`;
+      time--;
+      if(time<0){ clearInterval(countdown); submitQuiz(); }
+    },1000);
+
+    // Navigation
+    let current=1;
+    function showQ(n){
+      document.querySelectorAll('.question').forEach(q=>q.style.display='none');
+      document.getElementById('q'+n).style.display='block';
+      current=n;
+    }
+    function nextQ(){ if(current<4) showQ(current+1); }
+    function prevQ(){ if(current>1) showQ(current-1); }
+
+    // Submit
+    function submitQuiz(){
+      clearInterval(countdown);
+      let score=0;
+      for(let i=1;i<=4;i++){
+        let sel=document.querySelector('input[name="q'+i+'"]:checked');
+        let res=document.getElementById('res'+i);
+        if(sel){
+          if(sel.value===answers['q'+i]){
+            score+=3;
+            res.textContent="Correct! (+3)";
+            res.style.color="green";
+          } else {
+            score-=1;
+            res.textContent="Wrong! (-1). Correct answer: "+answers['q'+i];
+            res.style.color="red";
+          }
+        } else {
+          res.textContent="Not Attempted (0)";
+          res.style.color="gray";
+        }
+        document.getElementById('q'+i).style.display='block'; // show all after submit
+      }
+      document.getElementById('scoreboard').textContent="Final Score: "+score;
+    }
+
+    // Show first question initially
+    showQ(1);
+  </script>
+</body>
+</html>
